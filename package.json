@@ -1,0 +1,14 @@
+{
+  "name": "ocr-LesPetitsPlats",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "sass": "sass ./src/sass/main.scss:./public/assets/css/styles.css -w --style compressed",
+    "sass-watch": "sass ./src/sass/main.scss:./public/assets/css/styles.css -w --style compressed"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
