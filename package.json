@@ -6,9 +6,21 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "sass": "sass ./src/sass/main.scss:./public/assets/css/styles.css -w --style compressed",
-    "sass-watch": "sass ./src/sass/main.scss:./public/assets/css/styles.css -w --style compressed"
+    "sass-watch": "sass ./src/sass/main.scss:./public/assets/css/styles.css -w --style compressed",
+    "prettier": "prettier --write ."
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.30.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.6.0",
+    "eslint-plugin-promise": "^6.1.1"
+  },
+  "dependencies": {
+    "prettier": "^2.8.1"
+  }
 }
