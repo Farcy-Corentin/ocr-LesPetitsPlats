@@ -1,12 +1,12 @@
 {
-  "name": "ocr-LesPetitsPlats",
+  "name": "lespetitsplats",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "sass": "sass ./src/sass/main.scss:./public/assets/css/styles.css -w --style compressed",
-    "sass-watch": "sass ./src/sass/main.scss:./public/assets/css/styles.css -w --style compressed",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "sass-watch": "sass --watch ./src/sass/main.scss:./public/assets/css/styles.css -w --style compressed",
     "prettier": "prettier --write ."
   },
   "keywords": [],
@@ -18,9 +18,12 @@
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-n": "^15.6.0",
-    "eslint-plugin-promise": "^6.1.1"
-  },
-  "dependencies": {
-    "prettier": "^2.8.1"
+    "eslint-plugin-promise": "^6.1.1",
+    "@fortawesome/fontawesome-free": "^6.2.1",
+    "@popperjs/core": "^2.11.6",
+    "bootstrap": "^5.2.3",
+    "sass": "^1.57.1",
+    "prettier": "^2.8.1",
+    "vite": "^4.0.0"
   }
 }
