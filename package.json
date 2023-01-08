@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "sass-watch": "sass --watch ./src/sass/main.scss:./public/assets/css/styles.css -w --style compressed",
+    "sass-watch": "sass --watch ./src/sass/main.scss:./public/css/styles.css -w --style compressed",
     "prettier": "prettier --write ."
   },
   "keywords": [],
