@@ -11,7 +11,7 @@ const Header = () => {
   const logo = document.createElement('img')
   logo.classList.add('logo')
   logo.alt = 'Logo les petits plats - Homepage'
-  logo.src = '../public/assets/images/logo/logo.png'
+  logo.src = '../images/logo/logo.png'
 
   headerContainer.appendChild(logo)
 
