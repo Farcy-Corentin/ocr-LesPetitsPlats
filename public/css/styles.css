@@ -1,4 +1,4 @@
-﻿.bg-blue{background:#3282f7}.bg-red{background:#ed6454}.bg-teal{background:#68d9a4}.bg-blue{background:#3282f7}.bg-red{background:#ed6454}.bg-teal{background:#68d9a4}/*!
+﻿.bg-blue{background:#3282f7}.bg-red{background:#ed6454}.bg-teal{background:#68d9a4}.card-text{font-size:.75rem}.bg-blue{background:#3282f7}.bg-red{background:#ed6454}.bg-teal{background:#68d9a4}/*!
  * Bootstrap  v5.2.3 (https://getbootstrap.com/)
  * Copyright 2011-2022 The Bootstrap Authors
  * Copyright 2011-2022 Twitter, Inc.
@@ -15,4 +15,4 @@
  * Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
  * Copyright 2022 Fonticons, Inc.
- */:root,:host{--fa-style-family-classic: "Font Awesome 6 Free";--fa-font-solid: normal 900 1em/1 "Font Awesome 6 Free"}@font-face{font-family:"Font Awesome 6 Free";font-style:normal;font-weight:900;font-display:block;src:url("../webfonts/fa-solid-900.woff2") format("woff2"),url("../webfonts/fa-solid-900.ttf") format("truetype")}.fas,.fa-solid{font-weight:900}.search-input,.search-group{background:#e7e7e7;border-radius:5px;border:0;padding:1rem}.search-input{font-size:1.125rem}.search-input:focus{background:#e7e7e7}.search-input::placeholder{font-size:1.125rem}.search-group{font-size:1.75rem}.logo{width:18rem}/*# sourceMappingURL=styles.css.map */
+ */:root,:host{--fa-style-family-classic: "Font Awesome 6 Free";--fa-font-solid: normal 900 1em/1 "Font Awesome 6 Free"}@font-face{font-family:"Font Awesome 6 Free";font-style:normal;font-weight:900;font-display:block;src:url("../webfonts/fa-solid-900.woff2") format("woff2"),url("../webfonts/fa-solid-900.ttf") format("truetype")}.fas,.fa-solid{font-weight:900}.search-input,.search-group{background:#e7e7e7;border-radius:5px;border:0;padding:1rem}.search-input{font-size:1.125rem}.search-input:focus{background:#e7e7e7}.search-input::placeholder{font-size:1.125rem}.search-group{font-size:1.75rem}.timing i{font-size:1.15rem;margin-top:.2rem}.card-infos{font-size:.75rem;margin-bottom:4px}.card-infos p{margin:0}.description{overflow:hidden;line-height:100%;max-height:4.5rem;-webkit-box-orient:vertical;display:block;display:-webkit-box;text-overflow:ellipsis;-webkit-line-clamp:6}.card-infos ul{padding-right:0}.logo{width:18rem}/*# sourceMappingURL=styles.css.map */
