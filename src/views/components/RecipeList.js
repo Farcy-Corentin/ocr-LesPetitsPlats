@@ -1,5 +1,5 @@
 import { getAll } from '../../domain/recipes/RecipeRepository.js'
-import createRecipeFromData from '../../domain/recipes/recipeFactory.js'
+import createRecipeFromData from '../../domain/recipes/RecipeFactory.js'
 import RecipeCard from './RecipeCard.js'
 
 const RecipeList = () => {
