@@ -1,14 +1,14 @@
 const checkUnit = (ingredient) => {
+  if (!ingredient.quantity) {
+    return
+  }
+
   if (!ingredient.unit) {
     return `${ingredient.quantity}`
   }
 
   if (ingredient.unit === 'grammes') {
     return `${ingredient.quantity}g`
-  }
-
-  if (!ingredient.quantity) {
-    return ''
   }
 
   if (ingredient.unit === 'cl' || ingredient.unit === 'ml') {
