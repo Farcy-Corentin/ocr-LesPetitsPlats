@@ -1,3 +1,5 @@
+import { searchRecipes } from '../../domain/recipes/services/searchRecipes.js'
+
 const Searchbar = () => {
   const searchContainer = document.createElement('div')
   searchContainer.classList.add('container', 'mb-5')
@@ -31,6 +33,8 @@ const Searchbar = () => {
   searchForm.appendChild(searchFormGroup)
 
   searchContainer.appendChild(searchForm)
+
+  searchInput.addEventListener('input', searchRecipes)
 
   return searchContainer
 }
