@@ -1,12 +1,12 @@
-import { getAll } from '../../domain/recipes/RecipeRepository.js'
-import createRecipeFromData from '../../domain/recipes/RecipeFactory.js'
+import { getAll } from '../../domain/recipes/repositories/RecipeRepository.js'
+import createRecipeFromData from '../../domain/recipes/factories/RecipeFactory.js'
 import RecipeCard from './RecipeCard.js'
 
-const RecipeList = () => {
-  const recipes = createRecipeFromData(getAll())
+const RecipeList = (recipesData) => {
+  const recipes = createRecipeFromData(!recipesData ? getAll() : recipesData)
 
   const recipesContainer = document.createElement('div')
-  recipesContainer.classList.add('container')
+  recipesContainer.classList.add('container', 'recipes-section')
 
   const recipesList = document.createElement('section')
   recipesList.classList.add(
@@ -19,9 +19,14 @@ const RecipeList = () => {
     'my-4'
   )
 
-  recipes.map((recipe) => {
+  console.log(recipes)
+
+  for (let i = 0; i < recipes.length; i += 1) {
+    let recipe = []
+
+    recipe = recipes[i]
     recipesList.appendChild(RecipeCard(recipe))
-  })
+  }
 
   recipesContainer.appendChild(recipesList)
 
