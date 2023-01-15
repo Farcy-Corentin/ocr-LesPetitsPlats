@@ -12,9 +12,11 @@ export const searchAll = (search) => {
 
     const recipeText = recipe.name + ' ' + recipe.description
     let ingredientsText = ''
-    recipe.ingredients.forEach((ingredient) => {
-      ingredientsText += ingredient.ingredient + ' '
-    })
+
+    for (let j = 0; j < recipe.ingredients.length; j += 1) {
+      ingredientsText += recipe.ingredients[j].ingredient
+    }
+
     const recipeLower = (
       recipeText +
       ' ' +
@@ -22,15 +24,31 @@ export const searchAll = (search) => {
       ' ' +
       recipe.ustensils.join(' ') +
       ' '
-    ).toLowerCase()
+    )
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+
+    let matchCount = 0
 
     for (let j = 0; j < searchWords.length; j++) {
       const searchWord = searchWords[j]
 
-      if (recipeLower.includes(searchWord)) {
-        filteredRecipes.push(recipe)
+      const recipeWords = recipeLower.split(' ')
+      for (let k = 0; k < recipeWords.length; k++) {
+        const recipeWord = recipeWords[k]
+
+        if (recipeWord.startsWith(searchWord)) {
+          matchCount++
+          break
+        }
       }
     }
+
+    if (matchCount === searchWords.length) {
+      filteredRecipes.push(recipe)
+    }
   }
+
   return filteredRecipes
 }

@@ -22,7 +22,6 @@ const createIngredient = (ingredient) => {
   return {
     name: ingredient.ingredient,
     quantity: checkUnit(ingredient),
-    recipes: recipesByIngredient(),
   }
 }
 
