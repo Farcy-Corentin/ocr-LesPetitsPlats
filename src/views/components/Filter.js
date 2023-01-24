@@ -1,4 +1,6 @@
 import { searchIngredientByName } from '../../domain/ingredients/repositories/IngredientRepository.js'
+import { searchByIngredient } from '../../domain/recipes/repositories/RecipeRepository.js'
+import RecipeList from './RecipeList.js'
 
 const Filter = (filter) => {
   const comboboxWrapper = document.createElement('div')
@@ -50,30 +52,22 @@ const Filter = (filter) => {
   listWrapper.classList.add('list-wrapper')
 
   let ingredients = []
+  const searchIngredients = []
   let isOpen = false
 
-  const toggle = () => {
-    isOpen = !isOpen
+  const open = () => {
+    isOpen = true
+    comboboxWrapper.classList.add('active')
+    filterInput.style.borderRadius = '8px 0 0 0'
+    filterInput.placeholder = filter.onClickPlaceholder
+    menuIconWrapper.style.borderRadius = '0 8px 0 0'
+    menuIconWrapper.firstChild.classList.add('fa-chevron-up')
+    menuIconWrapper.firstChild.classList.remove('fa-chevron-down')
 
-    comboboxWrapper.classList.toggle('active')
-    filterInput.style.borderRadius = isOpen ? '8px 0 0 0' : '8px 0 0 8px'
-    !isOpen
-      ? (filterInput.placeholder = filter.placeholder)
-      : (filterInput.placeholder = filter.onClickPlaceholder)
+    if (filter.name === 'ingredient') {
+      ingredients = searchIngredientByName(filterInput.value)
 
-    menuIconWrapper.style.borderRadius = isOpen ? '0 8px 0 0' : '0 8px 8px 0'
-    menuIconWrapper.firstChild.classList.toggle('fa-chevron-down')
-    menuIconWrapper.firstChild.classList.toggle('fa-chevron-up')
-
-    if (!isOpen && comboboxWrapper.contains(listWrapper)) {
-      listWrapper.removeChild(listWrapper.firstChild)
-      comboboxWrapper.removeChild(listWrapper)
-    } else {
-      if (filter.name === 'ingredient') {
-        ingredients = searchIngredientByName(filterInput.value)
-
-        console.log(ingredients)
-
+      if (!listWrapper.firstChild) {
         const list = document.createElement('ul')
         list.classList.add(
           'content',
@@ -88,101 +82,116 @@ const Filter = (filter) => {
           listItem.dataset.option = `${i}`
           listItem.textContent = ingredients[i].name
 
-          listItem.addEventListener('click', (event) => {
-            const searchParam = new URL(document.location).searchParams.get(
-              'search'
-            )
+          listItem.addEventListener('click', () => {
+            const url = new URL(document.location)
+            const urlParams = new URLSearchParams(window.location.search)
+            let ingredient = urlParams.get('ingredient')
+            ingredient = ingredient
+              ? ingredient + '+' + listItem.textContent
+              : listItem.textContent
+            urlParams.set('ingredient', ingredient)
 
-            searchParam
-              ? window.history.pushState(
-                  {},
-                  '',
-                  `?search=${searchParam}&ingredients=${listItem.textContent.replace(
-                    / /g,
-                    '+'
-                  )}`
-                )
-              : window.history.pushState(
-                  {},
-                  '',
-                  `?ingredients=${listItem.textContent.replace(/ /g, '+')}`
-                )
+            searchIngredients.push(ingredients[i].name)
+
+            console.log('searchIngredient', searchIngredients)
+            close()
+            window.history.pushState(
+              {},
+              '',
+              `${url.pathname}?${urlParams.toString().replace(/%2B/g, '+')}`
+            )
+            document
+              .querySelector('.recipes-section')
+              .replaceWith(
+                RecipeList(searchByIngredient(searchIngredients.toString()))
+              )
           })
 
           list.appendChild(listItem)
         }
-
         listWrapper.appendChild(list)
-        comboboxWrapper.appendChild(listWrapper)
-
-        filterInput.addEventListener('input', (event) => {
-          const filteredIngredient = searchIngredientByName(event.target.value)
-
-          if (isOpen) {
-            listWrapper.removeChild(listWrapper.firstChild)
-          }
-
-          const list = document.createElement('ul')
-          list.classList.add(
-            'content',
-            'p-3',
-            'list-unstyled',
-            `bg-${filter.color}`,
-            'd-grid'
-          )
-
-          const ingredientsParams = []
-
-          for (let i = 0; i < filteredIngredient.length; i += 1) {
-            const listItem = document.createElement('li')
-            listItem.dataset.option = `${i}`
-            listItem.textContent = filteredIngredient[i].name
-
-            listItem.addEventListener('click', (event) => {
-              const url = new URL(document.location)
-
-              const urlParams = new URLSearchParams(window.location.search)
-              const searchParam = urlParams.get('search')
-
-              ingredientsParams.push(listItem.textContent)
-              console.log(ingredientsParams)
-
-              for (let i = 0; i < ingredientsParams.length; i += 1) {
-                searchParam
-                  ? window.history.pushState(
-                      {},
-                      '',
-                      `${url.href}&ingredients=${ingredientsParams[i].replace(
-                        / /g,
-                        '+'
-                      )}`
-                    )
-                  : window.history.pushState(
-                      {},
-                      '',
-                      `?ingredients=${ingredientsParams[i].replace(/ /g, '+')}`
-                    )
-              }
-            })
-
-            list.appendChild(listItem)
-          }
-          listWrapper.appendChild(list)
-        })
-
-        comboboxWrapper.appendChild(listWrapper)
       }
+      comboboxWrapper.appendChild(listWrapper)
+    }
+  }
+
+  const close = () => {
+    isOpen = false
+    comboboxWrapper.classList.remove('active')
+    filterInput.style.borderRadius = '8px 0 0 8px'
+    filterInput.placeholder = filter.placeholder
+    menuIconWrapper.style.borderRadius = '0 8px 8px 0'
+    menuIconWrapper.firstChild.classList.remove('fa-chevron-up')
+    menuIconWrapper.firstChild.classList.add('fa-chevron-down')
+    if (comboboxWrapper.contains(listWrapper)) {
+      listWrapper.removeChild(listWrapper.firstChild)
+      comboboxWrapper.removeChild(listWrapper)
     }
   }
 
   document.body.addEventListener('click', (event) => {
     if (isOpen && !comboboxWrapper.contains(event.target)) {
-      toggle()
+      close()
     }
   })
 
-  menuIconWrapper.addEventListener('click', toggle)
-  filterInput.addEventListener('click', toggle)
+  menuIconWrapper.addEventListener('click', () => (!isOpen ? open() : close()))
+  filterInput.addEventListener('click', open)
+  filterInput.addEventListener('input', (event) => {
+    const filteredIngredient = searchIngredientByName(event.target.value.trim())
+    let list
+    if (isOpen) {
+      if (listWrapper.firstChild) {
+        list = listWrapper.firstChild
+        list.innerHTML = ''
+      } else {
+        list = document.createElement('ul')
+        list.classList.add(
+          'content',
+          'p-3',
+          'list-unstyled',
+          `bg-${filter.color}`,
+          'd-grid'
+        )
+      }
+    }
+    for (let i = 0; i < filteredIngredient.length; i += 1) {
+      const listItem = document.createElement('li')
+      listItem.dataset.option = `${i}`
+      listItem.textContent = filteredIngredient[i].name
+      list.appendChild(listItem)
+
+      listItem.addEventListener('click', () => {
+        const url = new URL(document.location)
+        const urlParams = new URLSearchParams(window.location.search)
+        let ingredient = urlParams.get('ingredient')
+        ingredient = ingredient
+          ? ingredient + '+' + listItem.textContent
+          : listItem.textContent
+        urlParams.set('ingredient', ingredient)
+
+        searchIngredients.push(ingredients[i].name)
+
+        console.log('searchIngredient', searchIngredients)
+        close()
+        window.history.pushState(
+          {},
+          '',
+          `${url.pathname}?${urlParams.toString().replace(/%2B/g, '+')}`
+        )
+        document
+          .querySelector('.recipes-section')
+          .replaceWith(
+            RecipeList(searchByIngredient(searchIngredients.toString()))
+          )
+      })
+    }
+    if (!listWrapper.firstChild) {
+      listWrapper.appendChild(list)
+    }
+  })
+
+  filterInput.addEventListener('focus', open)
 
   return comboboxWrapper
 }

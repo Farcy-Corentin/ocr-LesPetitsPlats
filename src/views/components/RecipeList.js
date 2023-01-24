@@ -1,5 +1,6 @@
 import {
   getAll,
+  searchByIngredient,
   searchWithQuery,
 } from '../../domain/recipes/repositories/RecipeRepository.js'
 import createRecipeFromData from '../../domain/recipes/factories/RecipeFactory.js'
@@ -7,11 +8,22 @@ import RecipeCard from './RecipeCard.js'
 
 const RecipeList = () => {
   const urlParams = new URLSearchParams(window.location.search)
+  const searchParam = urlParams.get('search')
+  const ingredientParam = urlParams.get('ingredient')
+  let search = searchParam || ingredientParam || ''
 
-  const searchString = urlParams.get('search')
+  if (searchParam && ingredientParam) {
+    search += ' ' + ingredientParam.toLowerCase().replace(',', ' ')
+  }
 
   const recipes = createRecipeFromData(
-    searchString ? searchWithQuery(searchString) : getAll()
+    searchParam
+      ? searchWithQuery(search)
+      : searchParam && ingredientParam
+      ? searchWithQuery(search)
+      : ingredientParam
+      ? searchByIngredient(search)
+      : getAll()
   )
 
   const recipesContainer = document.createElement('div')

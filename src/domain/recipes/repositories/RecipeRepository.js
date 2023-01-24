@@ -2,6 +2,15 @@ import { recipes } from '../../../data/recipes.js'
 
 export const getAll = () => recipes
 
+const containsAllSearchWords = (recipe, searchWords) => {
+  for (let i = 0; i < searchWords.length; i++) {
+    if (!recipe.includes(searchWords[i])) {
+      return false
+    }
+  }
+  return true
+}
+
 export const searchWithQuery = (searchQuery) => {
   const searchWords = searchQuery.toLowerCase().split(' ')
 
@@ -24,28 +33,9 @@ export const searchWithQuery = (searchQuery) => {
       ' ' +
       recipe.ustensils.join(' ') +
       ' '
-    )
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase()
+    ).toLowerCase()
 
-    let matchCount = 0
-
-    for (let j = 0; j < searchWords.length; j++) {
-      const searchWord = searchWords[j]
-
-      const recipeWords = recipeLower.split(' ')
-      for (let k = 0; k < recipeWords.length; k++) {
-        const recipeWord = recipeWords[k]
-
-        if (recipeWord.startsWith(searchWord)) {
-          matchCount++
-          break
-        }
-      }
-    }
-
-    if (matchCount === searchWords.length) {
+    if (containsAllSearchWords(recipeLower, searchWords)) {
       filteredRecipes.push(recipe)
     }
   }
@@ -54,41 +44,44 @@ export const searchWithQuery = (searchQuery) => {
 }
 
 export const searchByIngredient = (ingredients) => {
-  const ingredientsSearch = ingredients.toLowerCase().split(' ')
+  ingredients = [ingredients.replace(',', ' ')]
+
+  console.log(ingredients)
   const filteredRecipes = []
 
-  for (let i = 0; i < recipes.length; i++) {
-    const recipe = recipes[i]
+  for (let i = 0; i < ingredients.length; i += 1) {
+    const ingredientsSearch = ingredients[i].toLowerCase().split(' ')
 
-    let ingredientsText = ''
+    for (let j = 0; j < recipes.length; j++) {
+      const recipe = recipes[j]
 
-    for (let j = 0; j < recipe.ingredients.length; j += 1) {
-      ingredientsText += recipe.ingredients[j].ingredient + ' '
-    }
+      let ingredientsText = ''
 
-    const ingredientLower = ingredientsText
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase()
+      for (let j = 0; j < recipe.ingredients.length; j += 1) {
+        ingredientsText += recipe.ingredients[j].ingredient + ' '
+      }
 
-    let matchCount = 0
+      const ingredientLower = ingredientsText.toLowerCase()
 
-    for (let j = 0; j < ingredientsSearch.length; j++) {
-      const ingredientSearch = ingredientsSearch[j]
+      let matchCount = 0
 
-      const ingredientsWords = ingredientLower.split(' ')
-      for (let k = 0; k < ingredientsWords.length; k++) {
-        const ingredientsWord = ingredientsWords[k]
+      for (let k = 0; k < ingredientsSearch.length; k++) {
+        const ingredientSearch = ingredientsSearch[k]
 
-        if (ingredientsWord.startsWith(ingredientSearch)) {
-          matchCount++
-          break
+        const ingredientsWords = ingredientLower.split(' ')
+        for (let l = 0; l < ingredientsWords.length; l += 1) {
+          const ingredientsWord = ingredientsWords[l]
+
+          if (ingredientsWord.startsWith(ingredientSearch)) {
+            matchCount++
+            break
+          }
         }
       }
-    }
 
-    if (matchCount === ingredientsSearch.length) {
-      filteredRecipes.push(recipe)
+      if (matchCount === ingredientsSearch.length) {
+        filteredRecipes.push(recipe)
+      }
     }
   }
 
