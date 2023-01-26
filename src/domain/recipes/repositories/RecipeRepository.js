@@ -3,8 +3,8 @@ import { recipes } from '../../../data/recipes.js'
 export const getAll = () => recipes
 
 const containsAllSearchWords = (recipe, searchWords) => {
-  for (let i = 0; i < searchWords.length; i++) {
-    if (!recipe.includes(searchWords[i])) {
+  for (let i = 0; i < searchWords.length; i += 1) {
+    if (!recipe.split(' ').includes(searchWords[i])) {
       return false
     }
   }
@@ -16,14 +16,14 @@ export const searchWithQuery = (searchQuery) => {
 
   const filteredRecipes = []
 
-  for (let i = 0; i < recipes.length; i++) {
+  for (let i = 0; i < recipes.length; i += 1) {
     const recipe = recipes[i]
 
     const recipeText = recipe.name + ' ' + recipe.description
     let ingredientsText = ''
 
     for (let j = 0; j < recipe.ingredients.length; j += 1) {
-      ingredientsText += recipe.ingredients[j].ingredient
+      ingredientsText += recipe.ingredients[j].ingredient + ' '
     }
 
     const recipeLower = (
@@ -52,7 +52,7 @@ export const searchByIngredient = (ingredients) => {
   for (let i = 0; i < ingredients.length; i += 1) {
     const ingredientsSearch = ingredients[i].toLowerCase().split(' ')
 
-    for (let j = 0; j < recipes.length; j++) {
+    for (let j = 0; j < recipes.length; j += 1) {
       const recipe = recipes[j]
 
       let ingredientsText = ''
@@ -65,7 +65,7 @@ export const searchByIngredient = (ingredients) => {
 
       let matchCount = 0
 
-      for (let k = 0; k < ingredientsSearch.length; k++) {
+      for (let k = 0; k < ingredientsSearch.length; k += 1) {
         const ingredientSearch = ingredientsSearch[k]
 
         const ingredientsWords = ingredientLower.split(' ')
