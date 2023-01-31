@@ -22,7 +22,7 @@ const Searchbar = () => {
   searchIconContainer.appendChild(searchIcon)
 
   const searchInput = document.createElement('input')
-  searchInput.type = 'text'
+  searchInput.type = 'search'
   searchInput.classList.add('form-control', 'search-input')
   searchInput.ariaLabel = 'Rechercher'
   searchInput.placeholder = 'Rechercher'

@@ -1,15 +1,51 @@
-import { recipes } from '../../../data/recipes.js'
+import {recipes} from '../../../data/recipes.js'
 
 export const getAll = () => recipes
 
 const containsAllSearchWords = (recipe, searchWords) => {
   for (let i = 0; i < searchWords.length; i += 1) {
-    if (!recipe.split(' ').includes(searchWords[i])) {
+    let found = false;
+    let recipeWords = recipe.split(' ')
+    for (let j = 0; j < recipeWords.length; j += 1) {
+      let distance = levenshteinDistance(recipeWords[j], searchWords[i]);
+      if (distance <= 1) {
+        found = true
+        break
+      }
+    }
+    if (!found) {
       return false
     }
   }
   return true
 }
+
+const levenshteinDistance = (recipe, searchWord) => {
+  if (!recipe.length) return searchWord.length;
+  if (!searchWord.length) return recipe.length;
+
+  let matrix = []
+  for (let i = 0; i <= searchWord.length; i += 1) {
+    matrix[i] = [i]
+  }
+  for (let j = 0; j <= recipe.length; j += 1) {
+    matrix[0][j] = j;
+  }
+
+  for (let i = 1; i <= searchWord.length; i += 1) {
+    for (let j = 1; j <= recipe.length; j += 1) {
+      if (searchWord.charAt(i - 1) === recipe.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1,
+          Math.min(matrix[i][j - 1] + 1,
+            matrix[i - 1][j] + 1));
+      }
+    }
+  }
+
+  return matrix[searchWord.length][recipe.length];
+};
 
 export const searchWithQuery = (searchQuery) => {
   const searchWords = searchQuery.toLowerCase().split(' ')
@@ -34,7 +70,7 @@ export const searchWithQuery = (searchQuery) => {
       recipe.ustensils.join(' ') +
       ' '
     ).toLowerCase()
-
+    
     if (containsAllSearchWords(recipeLower, searchWords)) {
       filteredRecipes.push(recipe)
     }
@@ -45,8 +81,7 @@ export const searchWithQuery = (searchQuery) => {
 
 export const searchByIngredient = (ingredients) => {
   ingredients = [ingredients.replace(',', ' ')]
-
-  console.log(ingredients)
+  
   const filteredRecipes = []
 
   for (let i = 0; i < ingredients.length; i += 1) {
@@ -63,23 +98,7 @@ export const searchByIngredient = (ingredients) => {
 
       const ingredientLower = ingredientsText.toLowerCase()
 
-      let matchCount = 0
-
-      for (let k = 0; k < ingredientsSearch.length; k += 1) {
-        const ingredientSearch = ingredientsSearch[k]
-
-        const ingredientsWords = ingredientLower.split(' ')
-        for (let l = 0; l < ingredientsWords.length; l += 1) {
-          const ingredientsWord = ingredientsWords[l]
-
-          if (ingredientsWord.startsWith(ingredientSearch)) {
-            matchCount++
-            break
-          }
-        }
-      }
-
-      if (matchCount === ingredientsSearch.length) {
+      if (containsAllSearchWords(ingredientLower, ingredientsSearch)) {
         filteredRecipes.push(recipe)
       }
     }

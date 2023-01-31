@@ -21,6 +21,7 @@ const Filter = (filter) => {
   inputGroup.classList.add('input-group')
 
   const filterInput = document.createElement('input')
+  filterInput.type = 'text'
   filterInput.classList.add(
     'form-control',
     'form-control-lg',
@@ -92,8 +93,7 @@ const Filter = (filter) => {
             urlParams.set('ingredient', ingredient)
 
             searchIngredients.push(ingredients[i].name)
-
-            console.log('searchIngredient', searchIngredients)
+            
             close()
             window.history.pushState(
               {},
@@ -171,8 +171,7 @@ const Filter = (filter) => {
         urlParams.set('ingredient', ingredient)
 
         searchIngredients.push(ingredients[i].name)
-
-        console.log('searchIngredient', searchIngredients)
+        
         close()
         window.history.pushState(
           {},
