@@ -1,4 +1,4 @@
-import { recipes } from '../../../data/recipes.js'
+import {recipes} from '../../../data/recipes.js'
 import Ingredient from '../entities/Ingredient.js'
 import {
   searchByIngredient,
@@ -22,16 +22,16 @@ function createUniqueIngredientList() {
     searchParam
       ? searchWithQuery(search)
       : searchParam && ingredientParam
-      ? searchWithQuery(search)
-      : ingredientParam
-      ? searchByIngredient(search)
-      : getAllRecipes()
+        ? searchWithQuery(search)
+        : ingredientParam
+          ? searchByIngredient(search)
+          : getAllRecipes()
   )
 
-  for (let i = 0; i < recipes.length; i++) {
+  for (let i = 0; i < recipes.length; i += 1) {
     const recipe = recipes[i]
 
-    for (let j = 0; j < recipe.ingredients.length; j++) {
+    for (let j = 0; j < recipe.ingredients.length; j += 1) {
       const ingredient = recipe.ingredients[j].name.toLowerCase()
 
       if (!uniqueIngredients[ingredient]) {
@@ -47,13 +47,14 @@ function createUniqueIngredientList() {
 
   return uniqueIngredientList
 }
+
 export const getAll = () => {
   const uniqueIngredients = {}
 
-  for (let i = 0; i < recipes.length; i++) {
+  for (let i = 0; i < recipes.length; i += 1) {
     const recipe = recipes[i]
 
-    for (let j = 0; j < recipe.ingredients.length; j++) {
+    for (let j = 0; j < recipe.ingredients.length; j += 1) {
       const ingredient = recipe.ingredients[j].ingredient
 
       if (!uniqueIngredients[ingredient]) {
@@ -85,5 +86,6 @@ export const searchIngredientByName = (ingredientName) => {
       filteredIngredients.push(Ingredient(uniqueIngredients[i]))
     }
   }
+  
   return filteredIngredients
 }

@@ -1,14 +1,17 @@
 import {recipes} from '../../../data/recipes.js'
 
+const COST = 0.5
 export const getAll = () => recipes
 
 const containsAllSearchWords = (recipe, searchWords) => {
   for (let i = 0; i < searchWords.length; i += 1) {
-    let found = false;
+    let found = false
     let recipeWords = recipe.split(' ')
+    
     for (let j = 0; j < recipeWords.length; j += 1) {
-      let distance = levenshteinDistance(recipeWords[j], searchWords[i]);
-      if (distance <= 1) {
+      let distance = levenshteinDistance(recipeWords[j], searchWords[i])
+      
+      if (distance <= COST) {
         found = true
         break
       }
@@ -21,31 +24,31 @@ const containsAllSearchWords = (recipe, searchWords) => {
 }
 
 const levenshteinDistance = (recipe, searchWord) => {
-  if (!recipe.length) return searchWord.length;
-  if (!searchWord.length) return recipe.length;
+  if (!recipe.length) return searchWord.length
+  if (!searchWord.length) return recipe.length
 
   let matrix = []
   for (let i = 0; i <= searchWord.length; i += 1) {
     matrix[i] = [i]
   }
   for (let j = 0; j <= recipe.length; j += 1) {
-    matrix[0][j] = j;
+    matrix[0][j] = j
   }
 
   for (let i = 1; i <= searchWord.length; i += 1) {
     for (let j = 1; j <= recipe.length; j += 1) {
       if (searchWord.charAt(i - 1) === recipe.charAt(j - 1)) {
-        matrix[i][j] = matrix[i - 1][j - 1];
+        matrix[i][j] = matrix[i - 1][j - 1]
       } else {
-        matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1,
-          Math.min(matrix[i][j - 1] + 1,
-            matrix[i - 1][j] + 1));
+        matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, // modification
+          Math.min(matrix[i][j - 1] + 1, // insertion
+            matrix[i - 1][j] + 1)) // suppression
       }
     }
   }
 
-  return matrix[searchWord.length][recipe.length];
-};
+  return matrix[searchWord.length][recipe.length]
+}
 
 export const searchWithQuery = (searchQuery) => {
   const searchWords = searchQuery.toLowerCase().split(' ')
@@ -80,7 +83,7 @@ export const searchWithQuery = (searchQuery) => {
 }
 
 export const searchByIngredient = (ingredients) => {
-  ingredients = [ingredients.replace(',', ' ')]
+  ingredients = [ingredients.replace('+', ' ').replaceAll(',', ' ')]
   
   const filteredRecipes = []
 
