@@ -1,0 +1,11 @@
+.tag-wrapper span {
+  padding: 8px 16px;
+}
+
+.tag-wrapper span p {
+  font-size: 0.875rem;
+}
+
+.tag-wrapper span p::first-letter {
+  text-transform: capitalize;
+}

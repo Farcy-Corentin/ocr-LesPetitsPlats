@@ -1,6 +1,7 @@
 import { searchIngredientByName } from '../../domain/ingredients/repositories/IngredientRepository.js'
 import { searchByIngredient } from '../../domain/recipes/repositories/RecipeRepository.js'
 import RecipeList from './RecipeList.js'
+import TagsList from "./TagsList.js";
 
 const Filter = (filter) => {
   const comboboxWrapper = document.createElement('div')
@@ -88,18 +89,23 @@ const Filter = (filter) => {
             const urlParams = new URLSearchParams(window.location.search)
             let ingredient = urlParams.get('ingredient')
             ingredient = ingredient
-              ? ingredient + '+' + listItem.textContent
+              ? ingredient + ',' + listItem.textContent
               : listItem.textContent
             urlParams.set('ingredient', ingredient)
 
-            searchIngredients.push(ingredients[i].name)
+            searchIngredients.push(listItem.textContent)
             
             close()
             window.history.pushState(
               {},
               '',
-              `${url.pathname}?${urlParams.toString().replace(/%2B/g, '+')}`
+              `${url.pathname}?${urlParams.toString().replace(/%2C/g, ',')}`
             )
+            document
+              .querySelector('.tag-container')
+              .replaceWith(
+                TagsList()
+              )
             document
               .querySelector('.recipes-section')
               .replaceWith(
@@ -166,18 +172,23 @@ const Filter = (filter) => {
         const urlParams = new URLSearchParams(window.location.search)
         let ingredient = urlParams.get('ingredient')
         ingredient = ingredient
-          ? ingredient + '+' + listItem.textContent
+          ? ingredient + ',' + listItem.textContent
           : listItem.textContent
         urlParams.set('ingredient', ingredient)
 
-        searchIngredients.push(ingredients[i].name)
+        searchIngredients.push(listItem.textContent)
         
         close()
         window.history.pushState(
           {},
           '',
-          `${url.pathname}?${urlParams.toString().replace(/%2B/g, '+')}`
+          `${url.pathname}?${urlParams.toString().replace(/%2C/g, ',')}`
         )
+        document
+          .querySelector('.tag-container')
+          .replaceWith(
+            TagsList()
+          )
         document
           .querySelector('.recipes-section')
           .replaceWith(
@@ -189,8 +200,6 @@ const Filter = (filter) => {
       listWrapper.appendChild(list)
     }
   })
-
-  filterInput.addEventListener('focus', open)
 
   return comboboxWrapper
 }
