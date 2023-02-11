@@ -1,5 +1,6 @@
 import {
   getAll,
+  searchByAppliance,
   searchByIngredient,
   searchWithQuery,
 } from '../../domain/recipes/repositories/RecipeRepository.js'
@@ -8,23 +9,25 @@ import RecipeCard from './RecipeCard.js'
 
 const RecipeList = () => {
   const urlParams = new URLSearchParams(window.location.search)
-  const searchParam = urlParams.get('search')
-  const ingredientParam = urlParams.get('ingredient')
-  let search = searchParam || ingredientParam || ''
+  let recipes = getAll()
 
-  if (searchParam && ingredientParam) {
-    search += ' ' + ingredientParam.toLowerCase().replace(',', ' ')
+  const searchParam = urlParams.get('search')
+  const ingredientParam = urlParams.get('ingredients')
+  const applianceParam = urlParams.get('appliances')
+
+  for (const key of urlParams.keys()) {
+    if (key === 'search') {
+      recipes = searchWithQuery(searchParam, recipes)
+    }
+    if (key === 'ingredients') {
+      recipes = searchByIngredient(ingredientParam, recipes)
+    }
+    if (key === 'appliances') {
+      recipes = searchByAppliance(applianceParam, recipes)
+    }
   }
 
-  const recipes = createRecipeFromData(
-    searchParam
-      ? searchWithQuery(search)
-      : searchParam && ingredientParam
-      ? searchWithQuery(search)
-      : ingredientParam
-      ? searchByIngredient(search)
-      : getAll()
-  )
+  recipes = createRecipeFromData(recipes)
 
   const recipesContainer = document.createElement('div')
   recipesContainer.classList.add('container', 'recipes-section')
@@ -42,8 +45,8 @@ const RecipeList = () => {
 
   for (let i = 0; i < recipes.length; i += 1) {
     let recipe = []
-
     recipe = recipes[i]
+
     recipesList.appendChild(RecipeCard(recipe))
   }
 

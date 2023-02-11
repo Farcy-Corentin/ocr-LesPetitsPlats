@@ -1,32 +1,16 @@
-import {recipes} from '../../../data/recipes.js'
+import { recipes } from '../../../data/recipes.js'
 import Ingredient from '../entities/Ingredient.js'
 import {
   searchByIngredient,
   searchWithQuery,
   getAll as getAllRecipes,
+  searchByAppliance,
 } from '../../recipes/repositories/RecipeRepository.js'
 import createRecipeFromData from '../../recipes/factories/RecipeFactory.js'
 
-function createUniqueIngredientList() {
+const createUniqueIngredientList = (recipes, ingredientParam) => {
   const uniqueIngredients = {}
-  const urlParams = new URLSearchParams(window.location.search)
-  const searchParam = urlParams.get('search')
-  const ingredientParam = urlParams.get('ingredient')
-  let search = searchParam || ingredientParam || ''
-
-  if (searchParam && ingredientParam) {
-    search += ' ' + ingredientParam.toLowerCase().replace(',', ' ')
-  }
-
-  const recipes = createRecipeFromData(
-    searchParam
-      ? searchWithQuery(search)
-      : searchParam && ingredientParam
-        ? searchWithQuery(search)
-        : ingredientParam
-          ? searchByIngredient(search)
-          : getAllRecipes()
-  )
+  ingredientParam = ingredientParam.split(',')
 
   for (let i = 0; i < recipes.length; i += 1) {
     const recipe = recipes[i]
@@ -42,7 +26,9 @@ function createUniqueIngredientList() {
 
   const uniqueIngredientList = []
   for (const key in uniqueIngredients) {
-    uniqueIngredientList.push(uniqueIngredients[key])
+    if (!ingredientParam.includes(key.toLowerCase())) {
+      uniqueIngredientList.push(uniqueIngredients[key])
+    }
   }
 
   return uniqueIngredientList
@@ -72,8 +58,30 @@ export const getAll = () => {
 }
 
 export const searchIngredientByName = (ingredientName) => {
-  let filteredIngredients = []
-  const uniqueIngredients = createUniqueIngredientList(recipes)
+  const urlParams = new URLSearchParams(window.location.search)
+  let recipes = getAllRecipes()
+
+  const searchParam = urlParams.get('search') ?? ''
+  const ingredientParam = urlParams.get('ingredients') ?? ''
+  const applianceParam = urlParams.get('appliances') ?? ''
+
+  for (const key of urlParams.keys()) {
+    if (key === 'search') {
+      recipes = searchWithQuery(searchParam, recipes)
+    }
+    if (key === 'ingredients') {
+      recipes = searchByIngredient(ingredientParam, recipes)
+    }
+    if (key === 'appliances') {
+      recipes = searchByAppliance(applianceParam, recipes)
+    }
+  }
+
+  recipes = createRecipeFromData(recipes)
+
+  const filteredIngredients = []
+  const uniqueIngredients = createUniqueIngredientList(recipes, ingredientParam)
+
   for (let i = 0; i < uniqueIngredients.length; i += 1) {
     if (
       uniqueIngredients[i]
@@ -86,6 +94,6 @@ export const searchIngredientByName = (ingredientName) => {
       filteredIngredients.push(Ingredient(uniqueIngredients[i]))
     }
   }
-  
+
   return filteredIngredients
 }
