@@ -1,0 +1,32 @@
+.combobox-wrapper.active {
+  min-width: 50%;
+  position: relative;
+}
+
+.combobox-wrapper.active .list-wrapper {
+  position: relative;
+}
+
+.combobox-wrapper.active .list-wrapper .content{
+  max-height: 24rem;
+  overflow: auto;
+  line-height: 2rem;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-radius: 0 0 0.5rem 0.5rem;
+  cursor: pointer;
+  color: #FFFFFF;
+  position: absolute;
+  z-index: 2;
+  width: 100%;
+  padding: 0 12px;
+}
+
+.combobox-wrapper.active .input-group input::placeholder {
+  color: #FFFFFF;
+  opacity: 0.5;
+}
+
+.combobox-wrapper .input-group input::placeholder {
+  color: #FFFFFF;
+  opacity: 0.5;
+}

@@ -1,0 +1,22 @@
+.search-input, .search-group {
+  background: #E7E7E7;
+  border-radius: 5px;
+  border: 0;
+  padding: 1rem;
+}
+
+.search-input {
+  font-size: 1.125rem;
+}
+
+.search-input:focus {
+  background: #E7E7E7;
+}
+
+.search-input::placeholder {
+  font-size: 1.125rem;
+}
+
+.search-group {
+  font-size: 1.75rem;
+}

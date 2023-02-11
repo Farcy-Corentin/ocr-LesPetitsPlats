@@ -1,0 +1,30 @@
+{
+  "name": "lespetitsplats",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "sass-watch": "sass --watch ./src/sass/main.scss:./public/css/styles.css -w --style compressed",
+    "prettier": "prettier --write .",
+    "lint": "eslint ." 
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^6.2.1",
+    "@popperjs/core": "^2.11.6",
+    "bootstrap": "^5.2.3",
+    "eslint": "^8.33.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-n": "^15.6.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "prettier": "^2.8.3",
+    "sass": "^1.57.1",
+    "vite": "^4.0.4"
+  }
+}
