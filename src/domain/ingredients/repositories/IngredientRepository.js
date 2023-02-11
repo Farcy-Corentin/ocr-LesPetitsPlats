@@ -5,6 +5,7 @@ import {
   searchWithQuery,
   getAll as getAllRecipes,
   searchByAppliance,
+  searchByUstensil,
 } from '../../recipes/repositories/RecipeRepository.js'
 import createRecipeFromData from '../../recipes/factories/RecipeFactory.js'
 
@@ -64,6 +65,7 @@ export const searchIngredientByName = (ingredientName) => {
   const searchParam = urlParams.get('search') ?? ''
   const ingredientParam = urlParams.get('ingredients') ?? ''
   const applianceParam = urlParams.get('appliances') ?? ''
+  const ustensilParam = urlParams.get('ustensils') ?? ''
 
   for (const key of urlParams.keys()) {
     if (key === 'search') {
@@ -74,6 +76,9 @@ export const searchIngredientByName = (ingredientName) => {
     }
     if (key === 'appliances') {
       recipes = searchByAppliance(applianceParam, recipes)
+    }
+    if (key === 'ustensils') {
+      recipes = searchByUstensil(ustensilParam, recipes)
     }
   }
 

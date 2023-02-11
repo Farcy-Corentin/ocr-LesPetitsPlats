@@ -8,7 +8,9 @@ import { searchApplianceByName } from './src/domain/appliances/repositories/Appl
 import {
   searchByAppliance,
   searchByIngredient,
+  searchByUstensil,
 } from './src/domain/recipes/repositories/RecipeRepository.js'
+import { searchUstensilByName } from './src/domain/ustensils/repositories/UstensilRepository.js'
 
 const filters = [
   {
@@ -24,14 +26,16 @@ const filters = [
     color: 'bg-success',
     placeholder: 'Appareils',
     onClickPlaceholder: 'Rechercher un appareil',
-    onSearch: (seach) => searchByAppliance(seach),
+    onSearch: (search) => searchByAppliance(search),
     searchBy: (appliances) => searchApplianceByName(appliances),
   },
   {
-    name: 'ustencils',
+    name: 'ustensils',
     color: 'bg-danger',
-    placeholder: 'Ustencils',
+    placeholder: 'Ustensils',
     onClickPlaceholder: 'Rechercher un ustencil',
+    onSearch: (search) => searchByUstensil(search),
+    searchBy: (ustensils) => searchUstensilByName(ustensils),
   },
 ]
 

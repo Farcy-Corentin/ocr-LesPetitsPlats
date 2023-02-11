@@ -1,4 +1,5 @@
 import RecipeList from '../../../views/components/RecipeList.js'
+import TagsList from '../../../views/components/TagsList.js'
 
 export const searchRecipes = () => {
   const searchEl = document.querySelector('.search-input')
@@ -41,7 +42,7 @@ export const searchRecipes = () => {
   }
 
   function setInputErrors({ input, name }, errors) {
-    let inputs = [input]
+    const inputs = [input]
 
     inputs.forEach((el) => {
       el.parentNode.setAttribute('data-error-visible', true)
@@ -50,7 +51,7 @@ export const searchRecipes = () => {
   }
 
   function resetInputErrors({ input }) {
-    let inputs = [input]
+    const inputs = [input]
 
     inputs.forEach((el) => {
       console.log('inputEl', el)
@@ -62,6 +63,8 @@ export const searchRecipes = () => {
       if (error.handler.name === 'atLeast') {
         window.history.pushState({}, '', `?search=`)
         document.querySelector('.recipes-section').replaceWith(RecipeList())
+
+        document.querySelector('.tag-container').replaceWith(TagsList())
       }
     })
   }
@@ -87,6 +90,9 @@ export const searchRecipes = () => {
           '',
           `?search=${searchEl.value.replace(/ /g, '+')}`
         )
+
+        document.querySelector('.tag-container').replaceWith(TagsList())
+
         return document
           .querySelector('.recipes-section')
           .replaceWith(RecipeList())

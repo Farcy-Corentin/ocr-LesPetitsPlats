@@ -5,7 +5,7 @@ const TagsList = () => {
   const url = new URL(window.location)
   const urlParam = new URLSearchParams(url.search)
 
-  const tags = []
+  let tags = []
 
   if (urlParam.has('ingredients') && urlParam.get('ingredients') !== '') {
     const ingredientsParam = urlParam.get('ingredients').split(',')
@@ -29,6 +29,17 @@ const TagsList = () => {
     }
   }
 
+  if (urlParam.has('ustensils') && urlParam.get('ustensils') !== '') {
+    const ustensilsParam = urlParam.get('ustensils').split(',')
+    for (let i = 0; i < ustensilsParam.length; i += 1) {
+      tags.push({
+        type: 'ustensils',
+        color: 'bg-danger',
+        children: ustensilsParam[i],
+      })
+    }
+  }
+
   const tagsContainer = document.createElement('div')
   tagsContainer.classList.add('container', 'mb-3', 'tag-container')
 
@@ -47,7 +58,9 @@ const TagsList = () => {
 
     const newUrlParam = new URLSearchParams()
 
-    newUrlParam.set('search', urlParam.get('search'))
+    urlParam.has('search')
+      ? newUrlParam.set('search', urlParam.get('search'))
+      : ''
 
     for (const type in urlTags) {
       newUrlParam.set(type, urlTags[type].join(','))
@@ -70,6 +83,10 @@ const TagsList = () => {
     tags.splice(index, 1)
 
     update()
+  }
+
+  tagsContainer.resetTags = () => {
+    tags = []
   }
 
   for (let i = 0; i < tags.length; i += 1) {

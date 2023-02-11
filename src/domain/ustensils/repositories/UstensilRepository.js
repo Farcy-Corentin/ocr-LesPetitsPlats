@@ -1,37 +1,39 @@
 import {
+  searchByIngredient,
+  searchWithQuery,
   getAll as getAllRecipes,
   searchByAppliance,
-  searchByIngredient,
   searchByUstensil,
-  searchWithQuery,
 } from '../../recipes/repositories/RecipeRepository.js'
-import Appliance from '../entities/Appliance.js'
+import Ustensil from '../entities/Ustensil.js'
 import Recipe from '../entities/Recipe.js'
 
-const createUniqueApplianceList = (recipes, applianceParam) => {
-  const uniqueAppliance = {}
+const createUniqueUstensilList = (recipes, ustensilParam) => {
+  const uniqueUstensil = {}
 
   for (let i = 0; i < recipes.length; i += 1) {
-    const recipe = Recipe(recipes[i].appliance)
+    const recipe = Recipe(recipes[i].ustensils)
 
-    const appliance = recipe.appliance.toLowerCase()
+    for (const recipeUstensil of recipe.ustencil) {
+      const ustensil = recipeUstensil.toLowerCase()
 
-    if (!uniqueAppliance[appliance]) {
-      uniqueAppliance[appliance] = appliance
+      if (!uniqueUstensil[ustensil]) {
+        uniqueUstensil[ustensil] = ustensil
+      }
     }
   }
 
-  const uniqueIngredientList = []
-  for (const key in uniqueAppliance) {
-    if (!applianceParam.includes(key.toLowerCase())) {
-      uniqueIngredientList.push(uniqueAppliance[key])
+  const uniqueUstensilList = []
+  for (const key in uniqueUstensil) {
+    if (!ustensilParam.includes(key.toLowerCase())) {
+      uniqueUstensilList.push(uniqueUstensil[key])
     }
   }
 
-  return uniqueIngredientList
+  return uniqueUstensilList
 }
 
-export const searchApplianceByName = (applianceName) => {
+export const searchUstensilByName = (ustensilName) => {
   const urlParams = new URLSearchParams(window.location.search)
   let recipes = getAllRecipes()
 
@@ -55,21 +57,21 @@ export const searchApplianceByName = (applianceName) => {
     }
   }
 
-  const filteredAppliance = []
-  const uniqueAppliance = createUniqueApplianceList(recipes, applianceParam)
+  const filteredUstencil = []
+  const uniqueUstencil = createUniqueUstensilList(recipes, ustensilParam)
 
-  for (let i = 0; i < uniqueAppliance.length; i += 1) {
+  for (let i = 0; i < uniqueUstencil.length; i += 1) {
     if (
-      uniqueAppliance[i]
+      uniqueUstencil[i]
         .toLowerCase()
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
-        .includes(applianceName.toLowerCase()) ||
-      uniqueAppliance[i].toLowerCase().includes(applianceName.toLowerCase())
+        .includes(ustensilName.toLowerCase()) ||
+      uniqueUstencil[i].toLowerCase().includes(ustensilName.toLowerCase())
     ) {
-      filteredAppliance.push(Appliance(uniqueAppliance[i]))
+      filteredUstencil.push(Ustensil(uniqueUstencil[i]))
     }
   }
 
-  return filteredAppliance
+  return filteredUstencil
 }

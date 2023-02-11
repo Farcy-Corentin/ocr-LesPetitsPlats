@@ -1,9 +1,10 @@
-import { recipes as recipesData } from '../../../data/recipes.js'
+import { recipes, recipes as recipesData } from '../../../data/recipes.js'
 
-const COST = 0.5
+const GLOBALSEARCHCOST = 1
+const FILTERCOST = 0.5
 export const getAll = () => recipesData
 
-const containsAllSearchWords = (recipe, searchWords) => {
+const containsAllSearchWords = (recipe, searchWords, cost) => {
   for (let i = 0; i < searchWords.length; i += 1) {
     let found = false
     const recipeWords = recipe.split(' ')
@@ -11,7 +12,7 @@ const containsAllSearchWords = (recipe, searchWords) => {
     for (let j = 0; j < recipeWords.length; j += 1) {
       const distance = levenshteinDistance(recipeWords[j], searchWords[i])
 
-      if (distance <= COST) {
+      if (distance <= cost) {
         found = true
         break
       }
@@ -78,7 +79,7 @@ export const searchWithQuery = (searchQuery, recipes) => {
       ' '
     ).toLowerCase()
 
-    if (containsAllSearchWords(recipeLower, searchWords)) {
+    if (containsAllSearchWords(recipeLower, searchWords, GLOBALSEARCHCOST)) {
       filteredRecipes.push(recipe)
     }
   }
@@ -105,7 +106,9 @@ export const searchByIngredient = (ingredients, recipes) => {
 
       const ingredientLower = ingredientsText.toLowerCase()
 
-      if (containsAllSearchWords(ingredientLower, ingredientsSearch)) {
+      if (
+        containsAllSearchWords(ingredientLower, ingredientsSearch, FILTERCOST)
+      ) {
         filteredRecipes.push(recipe)
       }
     }
@@ -131,7 +134,39 @@ export const searchByAppliance = (appliances, recipes) => {
 
       const applianceLower = appliancesText.toLowerCase()
 
-      if (containsAllSearchWords(applianceLower, appliancesSearch)) {
+      if (
+        containsAllSearchWords(applianceLower, appliancesSearch, FILTERCOST)
+      ) {
+        filteredRecipes.push(recipe)
+      }
+    }
+  }
+
+  return filteredRecipes
+}
+
+export const searchByUstensil = (ustensils, recipes) => {
+  ustensils = [ustensils.replace('+', ' ').replaceAll(',', ' ')]
+
+  const filteredRecipes = []
+
+  for (let i = 0; i < ustensils.length; i += 1) {
+    const ustensilsSearch = ustensils[i].toLowerCase().split(' ')
+
+    for (let j = 0; j < recipes.length; j += 1) {
+      const recipe = recipes[j]
+
+      let ustensilsText = ''
+
+      for (let j = 0; j < recipe.ustensils.length; j += 1) {
+        ustensilsText += recipe.ustensils[j] + ' '
+      }
+
+      const ingredientLower = ustensilsText.toLowerCase()
+
+      if (
+        containsAllSearchWords(ingredientLower, ustensilsSearch, FILTERCOST)
+      ) {
         filteredRecipes.push(recipe)
       }
     }
