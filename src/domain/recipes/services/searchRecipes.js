@@ -1,4 +1,3 @@
-import { getAll, searchWithQuery } from '../repositories/RecipeRepository.js'
 import RecipeList from '../../../views/components/RecipeList.js'
 
 export const searchRecipes = () => {
@@ -62,9 +61,7 @@ export const searchRecipes = () => {
     errors.map((error) => {
       if (error.handler.name === 'atLeast') {
         window.history.pushState({}, '', `?search=`)
-        document
-          .querySelector('.recipes-section')
-          .replaceWith(RecipeList(getAll()))
+        document.querySelector('.recipes-section').replaceWith(RecipeList())
       }
     })
   }
@@ -92,7 +89,7 @@ export const searchRecipes = () => {
         )
         return document
           .querySelector('.recipes-section')
-          .replaceWith(RecipeList(searchWithQuery(searchEl.value)))
+          .replaceWith(RecipeList())
       }
     })
   }

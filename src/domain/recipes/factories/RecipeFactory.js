@@ -3,7 +3,7 @@ import createIngredient from './IngredientFactory.js'
 
 const time = (time) => `${time} min`
 const createRecipeFromData = (data) => {
-  let recipe = []
+  const recipe = []
   for (let i = 0; i < data.length; i += 1) {
     recipe[i] = Recipe(
       data[i].id,

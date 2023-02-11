@@ -7,7 +7,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "sass-watch": "sass --watch ./src/sass/main.scss:./public/css/styles.css -w --style compressed",
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write .",
+    "lint": "eslint ." 
   },
   "keywords": [],
   "author": "",

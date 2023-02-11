@@ -1,7 +1,5 @@
-import { searchIngredientByName } from '../../domain/ingredients/repositories/IngredientRepository.js'
-import { searchByIngredient } from '../../domain/recipes/repositories/RecipeRepository.js'
 import RecipeList from './RecipeList.js'
-import TagsList from "./TagsList.js";
+import TagsList from './TagsList.js'
 
 const Filter = (filter) => {
   const comboboxWrapper = document.createElement('div')
@@ -27,7 +25,7 @@ const Filter = (filter) => {
     'form-control',
     'form-control-lg',
     'py-4',
-    `bg-${filter.color}`,
+    `${filter.color}`,
     'combobox-input'
   )
   filterInput.placeholder = filter.placeholder
@@ -36,7 +34,7 @@ const Filter = (filter) => {
   const menuIconWrapper = document.createElement('div')
   menuIconWrapper.classList.add(
     'input-group-text',
-    `bg-${filter.color}`,
+    `${filter.color}`,
     'text-white'
   )
 
@@ -53,9 +51,27 @@ const Filter = (filter) => {
   const listWrapper = document.createElement('div')
   listWrapper.classList.add('list-wrapper')
 
-  let ingredients = []
-  const searchIngredients = []
+  const search = []
   let isOpen = false
+
+  const onClick = (listItem) => {
+    const url = new URL(document.location)
+    const urlParams = new URLSearchParams(url.search)
+    let param = urlParams.get(filter.name)
+
+    param = param ? param + ',' + listItem.textContent : listItem.textContent
+
+    urlParams.set(filter.name, param)
+
+    search.push(listItem.textContent)
+
+    const newUrl = `?${urlParams.toString().replace(/%2C/g, ',')}`
+
+    close()
+    window.history.replaceState({}, '', newUrl)
+    document.querySelector('.tag-container').replaceWith(TagsList())
+    document.querySelector('.recipes-section').replaceWith(RecipeList())
+  }
 
   const open = () => {
     isOpen = true
@@ -66,59 +82,29 @@ const Filter = (filter) => {
     menuIconWrapper.firstChild.classList.add('fa-chevron-up')
     menuIconWrapper.firstChild.classList.remove('fa-chevron-down')
 
-    if (filter.name === 'ingredient') {
-      ingredients = searchIngredientByName(filterInput.value)
+    const children = filter.searchBy(filterInput.value)
 
-      if (!listWrapper.firstChild) {
-        const list = document.createElement('ul')
-        list.classList.add(
-          'content',
-          'p-3',
-          'list-unstyled',
-          `bg-${filter.color}`,
-          'd-grid'
-        )
+    const list = document.createElement('ul')
+    list.classList.add(
+      'content',
+      'p-3',
+      'list-unstyled',
+      `${filter.color}`,
+      'd-grid'
+    )
 
-        for (let i = 0; i < ingredients.length; i += 1) {
-          const listItem = document.createElement('li')
-          listItem.dataset.option = `${i}`
-          listItem.textContent = ingredients[i].name
+    for (let i = 0; i < children.length; i += 1) {
+      const listItem = document.createElement('li')
+      listItem.dataset.option = `${i}`
+      listItem.textContent = children[i].name
 
-          listItem.addEventListener('click', () => {
-            const url = new URL(document.location)
-            const urlParams = new URLSearchParams(window.location.search)
-            let ingredient = urlParams.get('ingredient')
-            ingredient = ingredient
-              ? ingredient + ',' + listItem.textContent
-              : listItem.textContent
-            urlParams.set('ingredient', ingredient)
+      listItem.addEventListener('click', () => onClick(listItem))
 
-            searchIngredients.push(listItem.textContent)
-            
-            close()
-            window.history.pushState(
-              {},
-              '',
-              `${url.pathname}?${urlParams.toString().replace(/%2C/g, ',')}`
-            )
-            document
-              .querySelector('.tag-container')
-              .replaceWith(
-                TagsList()
-              )
-            document
-              .querySelector('.recipes-section')
-              .replaceWith(
-                RecipeList(searchByIngredient(searchIngredients.toString()))
-              )
-          })
-
-          list.appendChild(listItem)
-        }
-        listWrapper.appendChild(list)
-      }
-      comboboxWrapper.appendChild(listWrapper)
+      list.appendChild(listItem)
     }
+    listWrapper.appendChild(list)
+
+    comboboxWrapper.appendChild(listWrapper)
   }
 
   const close = () => {
@@ -144,7 +130,8 @@ const Filter = (filter) => {
   menuIconWrapper.addEventListener('click', () => (!isOpen ? open() : close()))
   filterInput.addEventListener('click', open)
   filterInput.addEventListener('input', (event) => {
-    const filteredIngredient = searchIngredientByName(event.target.value.trim())
+    const children = filter.searchBy(event.target.value.trim())
+
     let list
     if (isOpen) {
       if (listWrapper.firstChild) {
@@ -156,48 +143,18 @@ const Filter = (filter) => {
           'content',
           'p-3',
           'list-unstyled',
-          `bg-${filter.color}`,
+          `${filter.color}`,
           'd-grid'
         )
       }
     }
-    for (let i = 0; i < filteredIngredient.length; i += 1) {
+    for (let i = 0; i < children.length; i += 1) {
       const listItem = document.createElement('li')
       listItem.dataset.option = `${i}`
-      listItem.textContent = filteredIngredient[i].name
+      listItem.textContent = children[i].name
       list.appendChild(listItem)
 
-      listItem.addEventListener('click', () => {
-        const url = new URL(document.location)
-        const urlParams = new URLSearchParams(window.location.search)
-        let ingredient = urlParams.get('ingredient')
-        ingredient = ingredient
-          ? ingredient + ',' + listItem.textContent
-          : listItem.textContent
-        urlParams.set('ingredient', ingredient)
-
-        searchIngredients.push(listItem.textContent)
-        
-        close()
-        window.history.pushState(
-          {},
-          '',
-          `${url.pathname}?${urlParams.toString().replace(/%2C/g, ',')}`
-        )
-        document
-          .querySelector('.tag-container')
-          .replaceWith(
-            TagsList()
-          )
-        document
-          .querySelector('.recipes-section')
-          .replaceWith(
-            RecipeList(searchByIngredient(searchIngredients.toString()))
-          )
-      })
-    }
-    if (!listWrapper.firstChild) {
-      listWrapper.appendChild(list)
+      listItem.addEventListener('click', () => onClick(listItem))
     }
   })
 

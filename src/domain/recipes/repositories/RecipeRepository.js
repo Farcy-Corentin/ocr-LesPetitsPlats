@@ -1,16 +1,16 @@
-import {recipes} from '../../../data/recipes.js'
+import { recipes as recipesData } from '../../../data/recipes.js'
 
 const COST = 0.5
-export const getAll = () => recipes
+export const getAll = () => recipesData
 
 const containsAllSearchWords = (recipe, searchWords) => {
   for (let i = 0; i < searchWords.length; i += 1) {
     let found = false
-    let recipeWords = recipe.split(' ')
-    
+    const recipeWords = recipe.split(' ')
+
     for (let j = 0; j < recipeWords.length; j += 1) {
-      let distance = levenshteinDistance(recipeWords[j], searchWords[i])
-      
+      const distance = levenshteinDistance(recipeWords[j], searchWords[i])
+
       if (distance <= COST) {
         found = true
         break
@@ -27,7 +27,7 @@ const levenshteinDistance = (recipe, searchWord) => {
   if (!recipe.length) return searchWord.length
   if (!searchWord.length) return recipe.length
 
-  let matrix = []
+  const matrix = []
   for (let i = 0; i <= searchWord.length; i += 1) {
     matrix[i] = [i]
   }
@@ -40,9 +40,13 @@ const levenshteinDistance = (recipe, searchWord) => {
       if (searchWord.charAt(i - 1) === recipe.charAt(j - 1)) {
         matrix[i][j] = matrix[i - 1][j - 1]
       } else {
-        matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, // modification
-          Math.min(matrix[i][j - 1] + 1, // insertion
-            matrix[i - 1][j] + 1)) // suppression
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1, // modification
+          Math.min(
+            matrix[i][j - 1] + 1, // insertion
+            matrix[i - 1][j] + 1
+          )
+        ) // suppression
       }
     }
   }
@@ -50,7 +54,7 @@ const levenshteinDistance = (recipe, searchWord) => {
   return matrix[searchWord.length][recipe.length]
 }
 
-export const searchWithQuery = (searchQuery) => {
+export const searchWithQuery = (searchQuery, recipes) => {
   const searchWords = searchQuery.toLowerCase().split(' ')
 
   const filteredRecipes = []
@@ -73,7 +77,7 @@ export const searchWithQuery = (searchQuery) => {
       recipe.ustensils.join(' ') +
       ' '
     ).toLowerCase()
-    
+
     if (containsAllSearchWords(recipeLower, searchWords)) {
       filteredRecipes.push(recipe)
     }
@@ -82,9 +86,9 @@ export const searchWithQuery = (searchQuery) => {
   return filteredRecipes
 }
 
-export const searchByIngredient = (ingredients) => {
+export const searchByIngredient = (ingredients, recipes) => {
   ingredients = [ingredients.replace('+', ' ').replaceAll(',', ' ')]
-  
+
   const filteredRecipes = []
 
   for (let i = 0; i < ingredients.length; i += 1) {
@@ -102,6 +106,32 @@ export const searchByIngredient = (ingredients) => {
       const ingredientLower = ingredientsText.toLowerCase()
 
       if (containsAllSearchWords(ingredientLower, ingredientsSearch)) {
+        filteredRecipes.push(recipe)
+      }
+    }
+  }
+
+  return filteredRecipes
+}
+
+export const searchByAppliance = (appliances, recipes) => {
+  appliances = [appliances.replace('+', ' ').replaceAll(',', ' ')]
+
+  const filteredRecipes = []
+
+  for (let i = 0; i < appliances.length; i += 1) {
+    const appliancesSearch = appliances[i].toLowerCase().split(' ')
+
+    for (let j = 0; j < recipes.length; j += 1) {
+      const recipe = recipes[j]
+
+      let appliancesText = ''
+
+      appliancesText += recipe.appliance + ' '
+
+      const applianceLower = appliancesText.toLowerCase()
+
+      if (containsAllSearchWords(applianceLower, appliancesSearch)) {
         filteredRecipes.push(recipe)
       }
     }
