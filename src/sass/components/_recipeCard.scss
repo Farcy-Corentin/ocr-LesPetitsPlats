@@ -1,5 +1,12 @@
 @import "../utils/mixin";
 
+.card {
+  transition: ease-in-out 300ms 50ms;
+}
+.card:hover {
+  transform: scale(1.05);
+}
+
 .timing i {
   font-size: 1.15rem;
   margin-top: 0.20rem;

@@ -48,12 +48,9 @@ const RecipeList = () => {
     'my-4'
   )
 
-  for (let i = 0; i < recipes.length; i += 1) {
-    let recipe = []
-    recipe = recipes[i]
-
-    recipesList.appendChild(RecipeCard(recipe))
-  }
+  recipes.map((recipe) => {
+    return recipesList.appendChild(RecipeCard(recipe))
+  })
 
   recipesContainer.appendChild(recipesList)
 
