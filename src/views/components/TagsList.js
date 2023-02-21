@@ -9,35 +9,35 @@ const TagsList = () => {
 
   if (urlParam.has('ingredients') && urlParam.get('ingredients') !== '') {
     const ingredientsParam = urlParam.get('ingredients').split(',')
-    for (let i = 0; i < ingredientsParam.length; i += 1) {
+    ingredientsParam.map((ingredient) =>
       tags.push({
         type: 'ingredients',
         color: 'bg-primary',
-        children: ingredientsParam[i],
+        children: ingredient,
       })
-    }
+    )
   }
 
   if (urlParam.has('appliances') && urlParam.get('appliances') !== '') {
     const appliancesParam = urlParam.get('appliances').split(',')
-    for (let i = 0; i < appliancesParam.length; i += 1) {
+    appliancesParam.map((appliance) =>
       tags.push({
         type: 'appliances',
         color: 'bg-success',
-        children: appliancesParam[i],
+        children: appliance,
       })
-    }
+    )
   }
 
   if (urlParam.has('ustensils') && urlParam.get('ustensils') !== '') {
     const ustensilsParam = urlParam.get('ustensils').split(',')
-    for (let i = 0; i < ustensilsParam.length; i += 1) {
+    ustensilsParam.map((ustensil) =>
       tags.push({
         type: 'ustensils',
         color: 'bg-danger',
-        children: ustensilsParam[i],
+        children: ustensil,
       })
-    }
+    )
   }
 
   const tagsContainer = document.createElement('div')
@@ -58,9 +58,9 @@ const TagsList = () => {
 
     const newUrlParam = new URLSearchParams()
 
-    urlParam.has('search')
-      ? newUrlParam.set('search', urlParam.get('search'))
-      : ''
+    if (urlParam.has('search')) {
+      newUrlParam.set('search', urlParam.get('search'))
+    }
 
     for (const type in urlTags) {
       newUrlParam.set(type, urlTags[type].join(','))
@@ -89,10 +89,7 @@ const TagsList = () => {
     tags = []
   }
 
-  for (let i = 0; i < tags.length; i += 1) {
-    const tag = tags[i]
-    tagsList.appendChild(Tag(tag, onRemove))
-  }
+  tags.map((tag) => tagsList.appendChild(Tag(tag, onRemove)))
 
   return tagsContainer
 }

@@ -6,7 +6,6 @@ const Filter = (filter) => {
   comboboxWrapper.classList.add(
     'combobox-wrapper',
     'col-12',
-    'col-md-4',
     'col-lg-3',
     'mb-2'
   )
@@ -93,15 +92,16 @@ const Filter = (filter) => {
       'd-grid'
     )
 
-    for (let i = 0; i < children.length; i += 1) {
+    children.map(({ name }, index) => {
       const listItem = document.createElement('li')
-      listItem.dataset.option = `${i}`
-      listItem.textContent = children[i].name
+      listItem.dataset.option = `${index}`
+      listItem.textContent = name
 
       listItem.addEventListener('click', () => onClick(listItem))
 
-      list.appendChild(listItem)
-    }
+      return list.appendChild(listItem)
+    })
+
     listWrapper.appendChild(list)
 
     comboboxWrapper.appendChild(listWrapper)
@@ -148,14 +148,15 @@ const Filter = (filter) => {
         )
       }
     }
-    for (let i = 0; i < children.length; i += 1) {
+    children.map(({ name }, index) => {
       const listItem = document.createElement('li')
-      listItem.dataset.option = `${i}`
-      listItem.textContent = children[i].name
-      list.appendChild(listItem)
+      listItem.dataset.option = `${index}`
+      listItem.textContent = name
 
       listItem.addEventListener('click', () => onClick(listItem))
-    }
+
+      return list.appendChild(listItem)
+    })
   })
 
   return comboboxWrapper

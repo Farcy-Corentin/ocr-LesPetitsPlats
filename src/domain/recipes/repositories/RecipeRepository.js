@@ -32,50 +32,53 @@ export const searchWithQuery = (searchQuery, recipes) => {
 }
 
 export const searchByIngredient = (ingredients, recipes) => {
-  ingredients = [ingredients.replace('+', ' ').replaceAll(',', ' ')]
+  if (!ingredients) {
+    return getAll()
+  }
 
-  return ingredients
-    .map((ingredient) => ingredient.toLowerCase().split(' '))
-    .flatMap((ingredientsSearch) => {
-      return recipes.filter((recipe) => {
-        const ingredientsText = recipe.ingredients
-          .map((ingredient) => ingredient.ingredient)
-          .join(' ')
-        const ingredientLower = ingredientsText.toLowerCase()
+  const searchIngredients = ingredients.toLowerCase().split(',')
 
-        return containsAllSearchWords(ingredientLower, ingredientsSearch)
-      })
-    })
+  return recipes.filter((recipe) => {
+    const recipeIngredients = recipe.ingredients.map(({ ingredient }) =>
+      ingredient.toLowerCase()
+    )
+
+    return searchIngredients.every((searchIngredient) =>
+      recipeIngredients.includes(searchIngredient)
+    )
+  })
 }
 
 export const searchByAppliance = (appliances, recipes) => {
-  appliances = [appliances.replace('+', ' ').replaceAll(',', ' ')]
+  if (!appliances) {
+    return getAll()
+  }
 
-  return appliances
-    .map((appliance) => appliance.toLowerCase().split(' '))
-    .flatMap((appliancesSearch) => {
-      return recipes.filter((recipe) => {
-        const appliancesText = recipe.appliance
-        const applianceLower = appliancesText.toLowerCase()
+  const searchAppliances = appliances.toLowerCase().split(',')
 
-        return containsAllSearchWords(applianceLower, appliancesSearch)
-      })
-    })
+  return recipes.filter((recipe) => {
+    const recipeAppliance = recipe.appliance.toLowerCase()
+
+    return searchAppliances.every((searchAppliance) =>
+      recipeAppliance.includes(searchAppliance)
+    )
+  })
 }
 
 export const searchByUstensil = (ustensils, recipes) => {
-  ustensils = [ustensils.replace('+', ' ').replaceAll(',', ' ')]
+  if (!ustensils) {
+    return getAll()
+  }
 
-  return ustensils
-    .map((ustensils) => ustensils.toLowerCase().split(' '))
-    .flatMap((ustensilsSearch) => {
-      return recipes.filter((recipe) => {
-        const ustensilsText = recipe.ustensils
-          .map((ustensil) => ustensil)
-          .join(' ')
-        const ingredientLower = ustensilsText.toLowerCase()
+  const searchUstensils = ustensils.toLowerCase().split(',')
 
-        return containsAllSearchWords(ingredientLower, ustensilsSearch)
-      })
-    })
+  return recipes.filter((recipe) => {
+    const recipeUstensils = recipe.ustensils.map((ustensil) =>
+      ustensil.toLowerCase()
+    )
+
+    return searchUstensils.every((searchUstensil) =>
+      recipeUstensils.includes(searchUstensil)
+    )
+  })
 }
