@@ -1,6 +1,7 @@
 const RecipeCard = (recipe) => {
-  const cardContainer = document.createElement('div')
-  cardContainer.classList.add('col')
+  const cardContainer = document.createElement('a')
+  cardContainer.href = '/'
+  cardContainer.classList.add('col', 'text-black', 'text-decoration-none')
 
   const card = document.createElement('div')
   card.classList.add('card', 'h-100')
@@ -57,7 +58,7 @@ const RecipeCard = (recipe) => {
 
     ingredientItem.append(ingredientName, ingredientQuantity)
 
-    ingredientsList.appendChild(ingredientItem)
+    return ingredientsList.appendChild(ingredientItem)
   })
 
   const description = document.createElement('div')

@@ -64,8 +64,10 @@ export const searchRecipes = () => {
         window.history.pushState({}, '', `?search=`)
         document.querySelector('.recipes-section').replaceWith(RecipeList())
 
-        document.querySelector('.tag-container').replaceWith(TagsList())
+        return document.querySelector('.tag-container').replaceWith(TagsList())
       }
+
+      return error
     })
   }
 

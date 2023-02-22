@@ -6,31 +6,28 @@ import {
   searchByUstensil,
 } from '../../recipes/repositories/RecipeRepository.js'
 import Ustensil from '../entities/Ustensil.js'
-import Recipe from '../entities/Recipe.js'
 
 const createUniqueUstensilList = (recipes, ustensilParam) => {
-  const uniqueUstensil = {}
+  ustensilParam = ustensilParam.split(',')
 
-  for (let i = 0; i < recipes.length; i += 1) {
-    const recipe = Recipe(recipes[i].ustensils)
+  const ustensils = Array.from(
+    new Set(
+      recipes.flatMap((recipe) =>
+        recipe.ustensils.map((name) => name.toLowerCase())
+      )
+    )
+  )
 
-    for (const recipeUstensil of recipe.ustencil) {
-      const ustensil = recipeUstensil.toLowerCase()
-
-      if (!uniqueUstensil[ustensil]) {
-        uniqueUstensil[ustensil] = ustensil
-      }
+  ustensilParam.map((ustensil) => {
+    const index = ustensils.indexOf(ustensil)
+    if (index !== -1) {
+      return ustensils.splice(index, 1)
     }
-  }
 
-  const uniqueUstensilList = []
-  for (const key in uniqueUstensil) {
-    if (!ustensilParam.includes(key.toLowerCase())) {
-      uniqueUstensilList.push(uniqueUstensil[key])
-    }
-  }
+    return ustensil
+  })
 
-  return uniqueUstensilList
+  return ustensils
 }
 
 export const searchUstensilByName = (ustensilName) => {
@@ -57,21 +54,17 @@ export const searchUstensilByName = (ustensilName) => {
     }
   }
 
-  const filteredUstencil = []
   const uniqueUstencil = createUniqueUstensilList(recipes, ustensilParam)
 
-  for (let i = 0; i < uniqueUstencil.length; i += 1) {
-    if (
-      uniqueUstencil[i]
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .includes(ustensilName.toLowerCase()) ||
-      uniqueUstencil[i].toLowerCase().includes(ustensilName.toLowerCase())
-    ) {
-      filteredUstencil.push(Ustensil(uniqueUstencil[i]))
-    }
-  }
-
-  return filteredUstencil
+  return uniqueUstencil
+    .map((ustensil) => ustensil)
+    .filter(
+      (ustensil) =>
+        ustensil
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .includes(ustensilName.toLowerCase()) ||
+        ustensil.includes(ustensilName.toLowerCase())
+    )
+    .map((name) => Ustensil(name.toLowerCase()))
 }

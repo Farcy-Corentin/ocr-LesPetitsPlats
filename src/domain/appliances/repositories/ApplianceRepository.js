@@ -6,29 +6,24 @@ import {
   searchWithQuery,
 } from '../../recipes/repositories/RecipeRepository.js'
 import Appliance from '../entities/Appliance.js'
-import Recipe from '../entities/Recipe.js'
 
 const createUniqueApplianceList = (recipes, applianceParam) => {
-  const uniqueAppliance = {}
+  applianceParam = applianceParam.split(',')
 
-  for (let i = 0; i < recipes.length; i += 1) {
-    const recipe = Recipe(recipes[i].appliance)
+  const appliances = Array.from(
+    new Set(recipes.map((recipe) => recipe.appliance.toLowerCase()))
+  )
 
-    const appliance = recipe.appliance.toLowerCase()
-
-    if (!uniqueAppliance[appliance]) {
-      uniqueAppliance[appliance] = appliance
+  applianceParam.map((appliance) => {
+    const index = appliances.indexOf(appliance)
+    if (index !== -1) {
+      return appliances.splice(index, 1)
     }
-  }
 
-  const uniqueIngredientList = []
-  for (const key in uniqueAppliance) {
-    if (!applianceParam.includes(key.toLowerCase())) {
-      uniqueIngredientList.push(uniqueAppliance[key])
-    }
-  }
+    return appliance
+  })
 
-  return uniqueIngredientList
+  return appliances
 }
 
 export const searchApplianceByName = (applianceName) => {
@@ -55,21 +50,16 @@ export const searchApplianceByName = (applianceName) => {
     }
   }
 
-  const filteredAppliance = []
   const uniqueAppliance = createUniqueApplianceList(recipes, applianceParam)
 
-  for (let i = 0; i < uniqueAppliance.length; i += 1) {
-    if (
-      uniqueAppliance[i]
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .includes(applianceName.toLowerCase()) ||
-      uniqueAppliance[i].toLowerCase().includes(applianceName.toLowerCase())
-    ) {
-      filteredAppliance.push(Appliance(uniqueAppliance[i]))
-    }
-  }
-
-  return filteredAppliance
+  return uniqueAppliance
+    .filter(
+      (appliance) =>
+        appliance
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .includes(applianceName.toLowerCase()) ||
+        appliance.includes(applianceName.toLowerCase())
+    )
+    .map((name) => Appliance(name.toLowerCase()))
 }

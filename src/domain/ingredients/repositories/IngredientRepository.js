@@ -1,4 +1,3 @@
-import { recipes } from '../../../data/recipes.js'
 import Ingredient from '../entities/Ingredient.js'
 import {
   searchByIngredient,
@@ -10,52 +9,25 @@ import {
 import createRecipeFromData from '../../recipes/factories/RecipeFactory.js'
 
 const createUniqueIngredientList = (recipes, ingredientParam) => {
-  const uniqueIngredients = {}
   ingredientParam = ingredientParam.split(',')
 
-  for (let i = 0; i < recipes.length; i += 1) {
-    const recipe = recipes[i]
+  const ingredients = Array.from(
+    new Set(
+      recipes.flatMap((recipe) =>
+        recipe.ingredients.map(({ name }) => name.toLowerCase())
+      )
+    )
+  )
 
-    for (let j = 0; j < recipe.ingredients.length; j += 1) {
-      const ingredient = recipe.ingredients[j].name.toLowerCase()
-
-      if (!uniqueIngredients[ingredient]) {
-        uniqueIngredients[ingredient] = ingredient
-      }
+  ingredientParam.map((ingredient) => {
+    const index = ingredients.indexOf(ingredient)
+    if (index !== -1) {
+      return ingredients.splice(index, 1)
     }
-  }
+    return ingredient
+  })
 
-  const uniqueIngredientList = []
-  for (const key in uniqueIngredients) {
-    if (!ingredientParam.includes(key.toLowerCase())) {
-      uniqueIngredientList.push(uniqueIngredients[key])
-    }
-  }
-
-  return uniqueIngredientList
-}
-
-export const getAll = () => {
-  const uniqueIngredients = {}
-
-  for (let i = 0; i < recipes.length; i += 1) {
-    const recipe = recipes[i]
-
-    for (let j = 0; j < recipe.ingredients.length; j += 1) {
-      const ingredient = recipe.ingredients[j].ingredient
-
-      if (!uniqueIngredients[ingredient]) {
-        uniqueIngredients[ingredient] = ingredient
-      }
-    }
-  }
-
-  const uniqueIngredientList = []
-  for (const key in uniqueIngredients) {
-    uniqueIngredientList.push(uniqueIngredients[key])
-  }
-
-  return uniqueIngredientList
+  return ingredients
 }
 
 export const searchIngredientByName = (ingredientName) => {
@@ -84,21 +56,17 @@ export const searchIngredientByName = (ingredientName) => {
 
   recipes = createRecipeFromData(recipes)
 
-  const filteredIngredients = []
   const uniqueIngredients = createUniqueIngredientList(recipes, ingredientParam)
 
-  for (let i = 0; i < uniqueIngredients.length; i += 1) {
-    if (
-      uniqueIngredients[i]
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .includes(ingredientName.toLowerCase()) ||
-      uniqueIngredients[i].toLowerCase().includes(ingredientName.toLowerCase())
-    ) {
-      filteredIngredients.push(Ingredient(uniqueIngredients[i]))
-    }
-  }
-
-  return filteredIngredients
+  return uniqueIngredients
+    .map((ingredient) => ingredient)
+    .filter(
+      (ingredient) =>
+        ingredient
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .includes(ingredientName.toLowerCase()) ||
+        ingredient.includes(ingredientName.toLowerCase())
+    )
+    .map((name) => Ingredient(name.toLowerCase()))
 }

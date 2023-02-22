@@ -1,20 +1,18 @@
 import Recipe from '../entities/Recipe.js'
 import createIngredient from './IngredientFactory.js'
 
-const time = (time) => `${time} min`
-const createRecipeFromData = (data) => {
-  const recipe = []
-  for (let i = 0; i < data.length; i += 1) {
-    recipe[i] = Recipe(
-      data[i].id,
-      data[i].name,
-      data[i].ingredients.map((ingredient) => createIngredient(ingredient)),
-      time(data[i].time),
-      data[i].description
-    )
-  }
+const recipeTime = (time) => `${time} min`
 
-  return recipe
+const createRecipeFromData = (data) => {
+  return data.map(({ id, name, ingredients, time, description }) =>
+    Recipe(
+      id,
+      name,
+      ingredients.map((ingredient) => createIngredient(ingredient)),
+      recipeTime(time),
+      description
+    )
+  )
 }
 
 export default createRecipeFromData
