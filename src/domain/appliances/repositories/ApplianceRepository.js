@@ -14,9 +14,14 @@ const createUniqueApplianceList = (recipes, applianceParam) => {
     new Set(recipes.map((recipe) => recipe.appliance.toLowerCase()))
   )
 
-  const index = applianceParam.map((appliance) => appliances.indexOf(appliance))
+  applianceParam.map((appliance) => {
+    const index = appliances.indexOf(appliance)
+    if (index !== -1) {
+      return appliances.splice(index, 1)
+    }
 
-  appliances.splice(index, 1)
+    return appliance
+  })
 
   return appliances
 }

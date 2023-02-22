@@ -20,7 +20,11 @@ const createUniqueUstensilList = (recipes, ustensilParam) => {
 
   ustensilParam.map((ustensil) => {
     const index = ustensils.indexOf(ustensil)
-    return ustensils.splice(index, 1)
+    if (index !== -1) {
+      return ustensils.splice(index, 1)
+    }
+
+    return ustensil
   })
 
   return ustensils

@@ -21,7 +21,10 @@ const createUniqueIngredientList = (recipes, ingredientParam) => {
 
   ingredientParam.map((ingredient) => {
     const index = ingredients.indexOf(ingredient)
-    return ingredients.splice(index, 1)
+    if (index !== -1) {
+      return ingredients.splice(index, 1)
+    }
+    return ingredient
   })
 
   return ingredients
